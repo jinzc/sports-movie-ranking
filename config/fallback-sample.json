@@ -1,8 +1,12 @@
 [
-  { "title": "布伦森东决MVP相关讨论升温，尼克斯晋级总决赛", "platform": "微博", "categoryHint": "体育", "rank": 1, "hot": "示例", "url": "#" },
-  { "title": "NBA东部决赛4比0横扫引发骑士休赛期讨论", "platform": "虎扑", "categoryHint": "体育", "rank": 2, "hot": "示例", "url": "#" },
-  { "title": "中超争冠形势变化，申花海港国安话题热度上升", "platform": "懂球帝", "categoryHint": "体育", "rank": 3, "hot": "示例", "url": "#" },
-  { "title": "新片定档暑期档，票房预售和主创路演成关注点", "platform": "微博", "categoryHint": "影视", "rank": 1, "hot": "示例", "url": "#" },
-  { "title": "热播剧大结局口碑分化，演员演技和烂尾争议登上讨论榜", "platform": "豆瓣", "categoryHint": "影视", "rank": 2, "hot": "示例", "url": "#" },
-  { "title": "综艺竞演舞台出圈，歌手补位和淘汰名单引发热议", "platform": "B站", "categoryHint": "影视", "rank": 3, "hot": "示例", "url": "#" }
+  { "title": "《折腰》大结局口碑分化，主演演技和剧情改编引热议", "platform": "微博", "rank": 1, "url": "#", "categoryHint": "film" },
+  { "title": "暑期档新片定档，预售票房和主创路演成为关注点", "platform": "猫眼", "rank": 2, "url": "#", "categoryHint": "film" },
+  { "title": "歌手竞演舞台出圈，补位歌手和淘汰名单引发讨论", "platform": "B站", "rank": 3, "url": "#", "categoryHint": "film" },
+  { "title": "《庆余年》番外物料发布，预告、海报、角色关系被二创传播", "platform": "抖音", "rank": 4, "url": "#", "categoryHint": "film" },
+  { "title": "豆瓣开分后口碑争议扩大，影评人和观众评分分化", "platform": "豆瓣", "rank": 5, "url": "#", "categoryHint": "film" },
+  { "title": "NBA东部决赛4比0横扫引发骑士休赛期讨论", "platform": "虎扑", "rank": 1, "url": "#", "categoryHint": "sports" },
+  { "title": "布伦森东决MVP热度上升，尼克斯晋级总决赛", "platform": "微博", "rank": 2, "url": "#", "categoryHint": "sports" },
+  { "title": "中超争冠形势变化，申花、海港、国安话题热度上升", "platform": "懂球帝", "rank": 3, "url": "#", "categoryHint": "sports" },
+  { "title": "法网赛程公布，郑钦文签表和大满贯前景成焦点", "platform": "知乎", "rank": 4, "url": "#", "categoryHint": "sports" },
+  { "title": "LPL季后赛对阵出炉，战队转会和首发名单引发讨论", "platform": "B站", "rank": 5, "url": "#", "categoryHint": "sports" }
 ]
