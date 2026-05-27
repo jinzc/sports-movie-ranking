@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>影视体育话题雷达</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="eyebrow">Domestic Topic Radar</p>
+        <h1 id="site-title">影视体育话题雷达</h1>
+        <p id="site-subtitle" class="subtitle">自动聚合国内平台热榜与社区内容，识别影视 / 体育相关热门话题及关联词。</p>
+      </div>
+      <div class="status-card">
+        <span class="status-dot"></span>
+        <div>
+          <p>最近更新</p>
+          <strong id="updated-at">加载中...</strong>
+          <small id="source-status"></small>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="toolbar">
+      <div class="tabs" id="category-tabs" aria-label="分类"></div>
+      <label class="search-box">
+        <span>筛选</span>
+        <input id="search-input" type="search" placeholder="输入球队、演员、片名、赛事、关联词..." />
+      </label>
+    </section>
+
+    <section class="summary-grid" id="summary-grid"></section>
+    <section id="topic-list" class="topic-list"></section>
+    <section id="empty-panel" class="empty-panel hidden">暂时没有匹配的话题。可在 config/radar.config.json 里增加关键词或来源。</section>
+    <details class="source-panel">
+      <summary>来源运行状态</summary>
+      <div id="source-list" class="source-list"></div>
+    </details>
+  </main>
+
+  <template id="topic-card-template">
+    <article class="topic-card">
+      <div class="topic-rank"></div>
+      <div class="topic-content">
+        <div class="topic-line">
+          <h2></h2>
+          <span class="heat-badge"></span>
+        </div>
+        <p class="reason"></p>
+        <div class="meta-row"></div>
+        <div class="related"></div>
+        <div class="samples"></div>
+      </div>
+    </article>
+  </template>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
