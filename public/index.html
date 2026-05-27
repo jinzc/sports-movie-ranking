@@ -8,57 +8,33 @@
 </head>
 <body>
   <header class="hero">
-    <div class="hero-inner">
-      <div>
-        <p class="eyebrow">Domestic Topic Radar</p>
-        <h1 id="site-title">影视体育话题雷达</h1>
-        <p id="site-subtitle" class="subtitle">自动聚合国内平台热榜与社区内容，识别影视 / 体育相关热门话题及关联词。</p>
-      </div>
-      <div class="status-card">
-        <span class="status-dot"></span>
-        <div>
-          <p>最近更新</p>
-          <strong id="updated-at">加载中...</strong>
-          <small id="source-status"></small>
-        </div>
-      </div>
+    <div>
+      <p class="eyebrow">运营参考 · 自动更新</p>
+      <h1 id="site-title">影视体育话题雷达</h1>
+      <p id="site-subtitle" class="subtitle">自动聚合国内热榜、社区与垂类来源，识别影视 / 体育热门话题及关联词。</p>
+    </div>
+    <div class="meta-card">
+      <span>更新时间</span>
+      <strong id="updated-at">加载中</strong>
+      <small id="source-status">来源检测中</small>
     </div>
   </header>
 
-  <main class="container">
-    <section class="toolbar">
-      <div class="tabs" id="category-tabs" aria-label="分类"></div>
-      <label class="search-box">
-        <span>筛选</span>
-        <input id="search-input" type="search" placeholder="输入球队、演员、片名、赛事、关联词..." />
-      </label>
+  <main>
+    <section id="top-cards" class="top-cards"></section>
+    <nav id="tabs" class="tabs"></nav>
+    <section id="content" class="content"></section>
+    <section class="source-panel">
+      <div class="panel-title">来源状态</div>
+      <div id="sources" class="source-grid"></div>
+      <p id="note" class="note"></p>
     </section>
-
-    <section class="summary-grid" id="summary-grid"></section>
-    <section id="topic-list" class="topic-list"></section>
-    <section id="empty-panel" class="empty-panel hidden">暂时没有匹配的话题。可在 config/radar.config.json 里增加关键词或来源。</section>
-    <details class="source-panel">
-      <summary>来源运行状态</summary>
-      <div id="source-list" class="source-list"></div>
-    </details>
   </main>
 
-  <template id="topic-card-template">
-    <article class="topic-card">
-      <div class="topic-rank"></div>
-      <div class="topic-content">
-        <div class="topic-line">
-          <h2></h2>
-          <span class="heat-badge"></span>
-        </div>
-        <p class="reason"></p>
-        <div class="meta-row"></div>
-        <div class="related"></div>
-        <div class="samples"></div>
-      </div>
-    </article>
-  </template>
+  <footer>
+    数据为自动聚合与规则识别结果，热度分为相对值，适合运营选题、选题预警和内容跟进参考。
+  </footer>
 
-  <script type="module" src="./app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>

@@ -1,132 +1,134 @@
-const state = {
-  data: null,
-  categoryId: 'film',
-  query: ''
-};
+const state = { data: null, active: null };
 
-const $ = selector => document.querySelector(selector);
+init();
 
 async function init() {
   try {
-    const res = await fetch('./data/radar.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch('./data/radar.json?t=' + Date.now());
+    if (!res.ok) throw new Error('数据文件加载失败');
     state.data = await res.json();
-    state.categoryId = state.data.categories?.[0]?.id || 'film';
-    renderShell();
+    state.active = state.data.categories?.[0]?.id || 'film';
     render();
   } catch (error) {
-    $('#topic-list').innerHTML = `<section class="empty-panel">数据加载失败：${escapeHtml(error.message)}。请先在 GitHub Actions 手动运行一次 Update Topic Radar。</section>`;
+    document.getElementById('content').innerHTML = `<div class="empty">数据加载失败：${escapeHtml(error.message)}</div>`;
   }
-}
-
-function renderShell() {
-  const { meta, categories = [], sources = [] } = state.data;
-  $('#site-title').textContent = meta.siteTitle || '影视体育话题雷达';
-  $('#site-subtitle').textContent = meta.siteSubtitle || '';
-  $('#updated-at').textContent = meta.generatedAtText || meta.generatedAt || '未知';
-  $('#source-status').textContent = `成功 ${meta.okSourceCount || 0} / ${meta.sourceCount || sources.length || 0} 个来源，条目 ${meta.itemCount || 0}`;
-
-  $('#category-tabs').innerHTML = categories.map(category => `
-    <button class="tab ${category.id === state.categoryId ? 'active' : ''}" data-id="${category.id}">
-      ${category.emoji || ''} ${category.label}
-    </button>
-  `).join('');
-  $('#category-tabs').addEventListener('click', event => {
-    const button = event.target.closest('button[data-id]');
-    if (!button) return;
-    state.categoryId = button.dataset.id;
-    render();
-  });
-
-  $('#search-input').addEventListener('input', event => {
-    state.query = event.target.value.trim().toLowerCase();
-    render();
-  });
-
-  $('#source-list').innerHTML = sources.map(source => `
-    <div class="source-item">
-      <strong>${escapeHtml(source.name)} <span class="${source.ok ? 'ok' : 'fail'}">${source.ok ? '成功' : '失败'}</span></strong>
-      <small>${escapeHtml(source.platform || '')} · ${source.count || 0} 条${source.error ? ` · ${escapeHtml(source.error)}` : ''}</small>
-    </div>
-  `).join('');
 }
 
 function render() {
-  const category = state.data.categories.find(item => item.id === state.categoryId) || state.data.categories[0];
-  const tabs = $('#category-tabs').querySelectorAll('.tab');
-  tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.id === category.id));
+  const { meta, categories, sources } = state.data;
+  document.title = meta.siteTitle || '影视体育话题雷达';
+  document.getElementById('site-title').textContent = meta.siteTitle || '影视体育话题雷达';
+  document.getElementById('site-subtitle').textContent = meta.siteSubtitle || '';
+  document.getElementById('updated-at').textContent = meta.generatedAtText || '-';
+  document.getElementById('source-status').textContent = `${meta.okSourceCount || 0}/${meta.sourceCount || 0} 个来源可用 · ${meta.itemCount || 0} 条候选内容`;
+  document.getElementById('note').textContent = meta.note || '';
 
-  const topics = filterTopics(category.topics || []);
-  renderSummary(category, topics);
-  renderTopics(topics);
+  renderTopCards(categories || []);
+  renderTabs(categories || []);
+  renderContent(categories || []);
+  renderSources(sources || []);
 }
 
-function filterTopics(topics) {
-  if (!state.query) return topics;
-  return topics.filter(topic => {
-    const text = [
-      topic.title,
-      topic.family,
-      topic.reason,
-      ...(topic.relatedWords || []),
-      ...(topic.platforms || []).map(p => p.name),
-      ...(topic.samples || []).map(s => s.title)
-    ].join(' ').toLowerCase();
-    return text.includes(state.query);
-  });
+function renderTopCards(categories) {
+  const html = categories.map(cat => {
+    const top = cat.topics?.[0];
+    return `
+      <article class="top-card ${cat.id === state.active ? 'active' : ''}" data-tab="${cat.id}">
+        <span>${cat.emoji || ''} ${escapeHtml(cat.label)}</span>
+        <strong>${top ? escapeHtml(top.title) : '暂无话题'}</strong>
+        <small>${cat.topicCount || 0} 个话题 · ${cat.itemCount || 0} 条内容</small>
+      </article>
+    `;
+  }).join('');
+  const el = document.getElementById('top-cards');
+  el.innerHTML = html;
+  el.querySelectorAll('[data-tab]').forEach(node => node.addEventListener('click', () => switchTab(node.dataset.tab)));
 }
 
-function renderSummary(category, topics) {
-  const totalSources = new Set(topics.flatMap(t => (t.platforms || []).map(p => p.name))).size;
-  const avg = topics.length ? Math.round(topics.reduce((sum, t) => sum + t.score, 0) / topics.length) : 0;
-  const top = topics[0]?.title || '暂无';
-  const cards = [
-    ['当前分类', `${category.emoji || ''} ${category.label}`],
-    ['热门话题', topics.length],
-    ['来源平台', totalSources],
-    ['平均热度', avg],
-    ['榜首话题', top]
-  ];
-  $('#summary-grid').innerHTML = cards.map(([label, value]) => `
-    <div class="summary-card"><p>${label}</p><strong>${escapeHtml(String(value))}</strong></div>
+function renderTabs(categories) {
+  const html = categories.map(cat => `
+    <button class="tab ${cat.id === state.active ? 'active' : ''}" data-tab="${cat.id}">
+      ${cat.emoji || ''} ${escapeHtml(cat.label)} <span>${cat.topicCount || 0}</span>
+    </button>
+  `).join('');
+  const el = document.getElementById('tabs');
+  el.innerHTML = html;
+  el.querySelectorAll('[data-tab]').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+}
+
+function switchTab(id) {
+  state.active = id;
+  renderTopCards(state.data.categories || []);
+  renderTabs(state.data.categories || []);
+  renderContent(state.data.categories || []);
+}
+
+function renderContent(categories) {
+  const cat = categories.find(x => x.id === state.active) || categories[0];
+  if (!cat) return;
+  const el = document.getElementById('content');
+  if (!cat.topics || cat.topics.length === 0) {
+    el.innerHTML = `<div class="empty">暂无${escapeHtml(cat.label)}相关话题。可以稍后等定时任务更新，或检查来源是否被限流。</div>`;
+    return;
+  }
+  el.innerHTML = cat.topics.map(topic => renderTopic(topic)).join('');
+}
+
+function renderTopic(topic) {
+  const platforms = (topic.platforms || []).map(p => `<span class="pill neutral">${escapeHtml(p.name)} × ${p.count}</span>`).join('');
+  const words = (topic.relatedWords || []).slice(0, 28).map(w => `<span class="word">${escapeHtml(w)}</span>`).join('');
+  const samples = (topic.samples || []).map(sample => `
+    <a class="sample" href="${escapeAttr(sample.url || '#')}" target="_blank" rel="noreferrer">
+      <span>${escapeHtml(sample.title)}</span>
+      <em>${escapeHtml(sample.platform || '')}${sample.rank ? ` · #${sample.rank}` : ''}</em>
+    </a>
+  `).join('');
+  return `
+    <article class="topic-card">
+      <div class="rank">${topic.rank}</div>
+      <div class="topic-main">
+        <div class="topic-head">
+          <h2>${escapeHtml(topic.title)}</h2>
+          <span class="heat ${heatClass(topic.score)}">${topic.score} · ${escapeHtml(topic.heatLevel || '')}热度</span>
+        </div>
+        <p class="reason">${escapeHtml(topic.reason || '')}</p>
+        <div class="pill-row">
+          <span class="pill blue">${escapeHtml(topic.family || '自动发现')}</span>
+          <span class="pill neutral">${topic.itemCount || 0} 条内容</span>
+          <span class="pill neutral">${topic.sourceCount || 0} 个来源</span>
+          ${platforms}
+        </div>
+        <div class="word-row">${words}</div>
+        <div class="samples">${samples}</div>
+      </div>
+    </article>
+  `;
+}
+
+function renderSources(sources) {
+  const el = document.getElementById('sources');
+  if (!sources.length) {
+    el.innerHTML = '<span class="source-item bad">暂无来源状态</span>';
+    return;
+  }
+  el.innerHTML = sources.map(s => `
+    <span class="source-item ${s.ok ? 'ok' : 'bad'}" title="${escapeAttr(s.error || '')}">
+      ${s.ok ? '✓' : '×'} ${escapeHtml(s.name)} <em>${s.count || 0}</em>
+    </span>
   `).join('');
 }
 
-function renderTopics(topics) {
-  const list = $('#topic-list');
-  const empty = $('#empty-panel');
-  list.innerHTML = '';
-  empty.classList.toggle('hidden', topics.length > 0);
-
-  const template = $('#topic-card-template');
-  for (const topic of topics) {
-    const node = template.content.cloneNode(true);
-    node.querySelector('.topic-rank').textContent = topic.rank;
-    node.querySelector('h2').textContent = topic.title;
-    node.querySelector('.heat-badge').textContent = `${topic.score} · ${topic.heatLevel}热度`;
-    node.querySelector('.reason').textContent = topic.reason;
-    node.querySelector('.meta-row').innerHTML = [
-      `<span class="meta family">${escapeHtml(topic.family || '自动发现')}</span>`,
-      `<span class="meta">${topic.itemCount || 0} 条内容</span>`,
-      `<span class="meta">${topic.sourceCount || 0} 个来源</span>`,
-      ...((topic.platforms || []).slice(0, 5).map(p => `<span class="meta">${escapeHtml(p.name)} × ${p.count}</span>`))
-    ].join('');
-    node.querySelector('.related').innerHTML = (topic.relatedWords || []).slice(0, 30).map(word => `<span class="chip">${escapeHtml(word)}</span>`).join('');
-    node.querySelector('.samples').innerHTML = (topic.samples || []).slice(0, 5).map(sample => `
-      <div class="sample">
-        <a href="${escapeAttr(sample.url || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(sample.title)}</a>
-        <small>${escapeHtml(sample.platform || '')} · #${sample.rank || '-'}</small>
-      </div>
-    `).join('');
-    list.appendChild(node);
-  }
+function heatClass(score) {
+  if (score >= 80) return 'high';
+  if (score >= 60) return 'midhigh';
+  if (score >= 36) return 'mid';
+  return 'low';
 }
 
 function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
-}
-function escapeAttr(value) {
-  return escapeHtml(value).replace(/`/g, '&#96;');
+  return String(value ?? '').replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
 }
 
-init();
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/'/g, '&#39;');
+}
