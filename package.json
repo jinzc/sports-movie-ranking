@@ -1,0 +1,13 @@
+{
+  "name": "topic-radar-cn",
+  "version": "2.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "update": "node scripts/update.js",
+    "check": "node --check scripts/update.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
