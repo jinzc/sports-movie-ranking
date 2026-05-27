@@ -418,22 +418,45 @@ function addItemToCluster(clusters, item, category, settings) {
       platforms: new Map(),
       related: new Map(),
       samples: [],
+      sampleKeys: new Set(),
+      itemKeys: new Set(),
       families: new Map()
     };
     clusters.push(target);
   }
-  target.rawScore += item.itemScore;
-  target.itemCount += 1;
+
+  // v5 修复：同一个热词常会同时出现在微博热搜、微博文娱榜、RSSHub、TopHub 等多个入口。
+  // 之前只做了“同一来源内去重”，没有在同一话题卡片里继续去重，所以底部样本会重复显示。
+  // 这里按“标题核心 + 平台”去重：同一平台同一标题只计一次、只展示一次；
+  // 但仍保留 sourceIds，用于判断这个话题来自几个来源入口。
   target.sourceIds.add(item.sourceId);
-  target.platforms.set(item.platform, (target.platforms.get(item.platform) || 0) + 1);
-  target.families.set(item.family, (target.families.get(item.family) || 0) + 1);
-  for (const term of item.relatedTerms) {
-    if (isBadRelatedTerm(term, settings)) continue;
-    target.related.set(term, (target.related.get(term) || 0) + 1);
+  const itemKey = makeSampleKey(item);
+  const isNewItem = !target.itemKeys.has(itemKey);
+
+  if (isNewItem) {
+    target.itemKeys.add(itemKey);
+    target.rawScore += item.itemScore;
+    target.itemCount += 1;
+    target.platforms.set(item.platform, (target.platforms.get(item.platform) || 0) + 1);
+    target.families.set(item.family, (target.families.get(item.family) || 0) + 1);
+    for (const term of item.relatedTerms) {
+      if (isBadRelatedTerm(term, settings)) continue;
+      target.related.set(term, (target.related.get(term) || 0) + 1);
+    }
   }
-  if (target.samples.length < (settings.topicSampleLimit || 8)) {
+
+  const sampleKey = makeSampleKey(item);
+  if (isNewItem && !target.sampleKeys.has(sampleKey) && target.samples.length < (settings.topicSampleLimit || 8)) {
+    target.sampleKeys.add(sampleKey);
     target.samples.push({ title: item.title, platform: item.platform, sourceName: item.sourceName, channel: item.channel, url: item.url, rank: item.rank, isFallback: item.isFallback || false });
   }
+}
+
+function makeSampleKey(item) {
+  const titleKey = normalizeKey(item.title)
+    .replace(/冲上热搜|登上热搜|引热议|引发热议|相关讨论|话题升温|上榜|热度上升/g, '')
+    .trim();
+  return `${String(item.platform || '').toLowerCase()}|${titleKey}`;
 }
 
 function areSimilarTopics(keyA, keyB, titleA, titleB) {
