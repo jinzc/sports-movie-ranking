@@ -4,10 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "update": "node scripts/update.js",
-    "check": "node --check scripts/update.js"
+    "update": "node scripts/update.js"
   },
-  "engines": {
-    "node": ">=20"
-  }
+  "dependencies": {}
 }
