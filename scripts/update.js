@@ -15,7 +15,8 @@ const STOP_WORDS = new Set([
   '微博', '百度', '抖音', '知乎', '虎扑', 'B站', '哔哩哔哩', '豆瓣', '今日热榜', '热搜', '热榜', '话题', '视频', '网友',
   '相关', '回应', '为何', '怎么', '哪些', '一个', '可以', '已经', '正式', '最新', '突然', '真的', '原来', '今年', '今日', '今天', '昨天', '明天', '现在',
   '冠军', '比赛', '影视', '体育', '娱乐', '新闻', '热门', '论坛', '榜单', '讨论', '引发', '升温', '关注', '上榜', '榜首', '冲上', '登上', '进入',
-  '数据', '官方', '平台', '开放', 'API', 'api', '全网', '阅读', '高效', '榜眼', '来源', '内容', '自动发现'
+  '数据', '官方', '平台', '开放', 'API', 'api', '全网', '阅读', '高效', '榜眼', '来源', '内容', '自动发现',
+  '榜中榜', '热文库', '小部件', '公众号', '赞助商', '垂类热榜', '接口', '模板', '聚合页', '今日简报', '即时写作'
 ]);
 
 async function main() {
@@ -221,9 +222,21 @@ function parseRankHtml(html, source, settings) {
     .map((item, index) => ({ ...item, rank: item.rank || index + 1, platform: source.platform }));
 }
 
+function isTemplateOrServiceTitle(title, settings = {}) {
+  const t = cleanupTitle(title);
+  if (!t) return true;
+  const lower = t.toLowerCase();
+  const hard = settings.hardBlockTerms || [];
+  if (hard.some(term => term && lower.includes(String(term).toLowerCase()))) return true;
+  if (/榜眼|垂类热榜|榜中榜|热文库|小部件|赞助商|公众号|今日简报|即时写作|让每个人都可以自信地写作|人工智能让每个人|开放平台|数据\s*API|API\s*开放|接口服务|商业合作|广告合作|免责声明|隐私政策|用户协议/i.test(t)) return true;
+  if (/^(榜中榜|热文库|小部件|公众号|赞助商|更多|首页|登录|注册|下载|开发者|文档)$/i.test(t)) return true;
+  return false;
+}
+
 function isUsableTitle(title, settings = {}) {
   const t = cleanupTitle(title);
   if (!t || t.length < 3 || t.length > 90) return false;
+  if (isTemplateOrServiceTitle(t, settings)) return false;
   if (!/[\u4e00-\u9fa5A-Za-z0-9]/.test(t)) return false;
   if (/^(首页|登录|注册|下载|更多|关于我们|用户中心|夜间模式|订阅|设置|开发者|文档|App|API|今日热榜|热搜榜|话题榜|实时热点)$/i.test(t)) return false;
   if (/^[\d\s\.、#\-]+$/.test(t)) return false;
@@ -278,8 +291,10 @@ function categoryMatch(category, item, settings) {
   const hasQuotedFilmSignal = category.id === 'film' && /《[^》]{2,30}》/.test(text);
   const hasStrongSignal = positiveCount > 0 || hasQuotedFilmSignal;
 
-  // 垂类来源可信，但仍需要经过上面的广告/API/模板过滤；泛热榜必须命中影视/体育词。
-  const ok = isHinted || hasStrongSignal;
+  // v3 修复：不能因为来源是“文娱榜/体育榜”就全量收录。
+  // TopHub 页面里会混入“榜中榜、热文库、公众号、小部件、赞助商、API开放平台”等站点模板文本。
+  // 因此所有候选标题都必须命中影视/体育词库，或具备片名《》这类强信号，才进入榜单。
+  const ok = hasStrongSignal && !isTemplateOrServiceTitle(text, settings);
   return { ok, isHinted, matchedTerms, matchedSeedTerms, positiveCount };
 }
 
@@ -326,7 +341,8 @@ function chooseTopicTitle(title, terms, family, settings) {
   let best = pieces.find(p => terms.some(t => p.includes(t))) || pieces[0] || cleaned;
   best = best.replace(/^(\d+\s*)/, '').trim();
   if (best.length > 34) best = best.slice(0, 33) + '…';
-  if (best.length < 4 && family !== '自动发现') best = `${family}相关话题`;
+  if (best.length < 4) return '';
+  if (isTemplateOrServiceTitle(best, settings)) return '';
   return cleanupTitle(best);
 }
 
@@ -470,7 +486,7 @@ function isBadRelatedTerm(term, settings = {}) {
   if (STOP_WORDS.has(t)) return true;
   if (/^\d+$/.test(t)) return true;
   if ((settings.hardBlockTerms || []).some(block => t.toLowerCase().includes(String(block).toLowerCase()))) return true;
-  if (/榜眼|API|开放平台|总结全网|今日简报|赛博|解压神器|让阅读更高效/i.test(t)) return true;
+  if (/榜眼|垂类热榜|榜中榜|热文库|小部件|赞助商|公众号|API|开放平台|总结全网|今日简报|即时写作|赛博|解压神器|让阅读更高效|让每个人都可以自信地写作/i.test(t)) return true;
   return false;
 }
 
