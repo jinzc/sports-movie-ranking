@@ -1,0 +1,444 @@
+{
+  "meta": {
+    "siteTitle": "影视体育话题雷达",
+    "siteSubtitle": "自动聚合国内平台热榜与社区内容，识别影视 / 体育相关热门话题及关联词，用于内容运营选题参考。",
+    "timezone": "Asia/Shanghai",
+    "generatedAt": "2026-05-27T03:29:51.375Z",
+    "generatedAtText": "2026/05/27 11:29:51",
+    "sourceCount": 19,
+    "okSourceCount": 0,
+    "failedSourceCount": 19,
+    "itemCount": 6,
+    "usedFallback": true,
+    "note": "当前运行环境无法访问外部来源，已展示示例数据。部署到 GitHub 后，Actions 会自动抓取真实数据。"
+  },
+  "categories": [
+    {
+      "id": "film",
+      "label": "影视",
+      "emoji": "🎬",
+      "itemCount": 3,
+      "topicCount": 3,
+      "topics": [
+        {
+          "title": "新片定档暑期档",
+          "family": "票房与档期",
+          "score": 83,
+          "heatLevel": "高",
+          "itemCount": 1,
+          "sourceCount": 1,
+          "platforms": [
+            {
+              "name": "微博",
+              "count": 1
+            }
+          ],
+          "relatedWords": [
+            "票房预售和主创路演成关注点",
+            "新片定档暑期档",
+            "暑期档",
+            "票房",
+            "预售",
+            "定档",
+            "路演",
+            "主创"
+          ],
+          "reason": "微博等来源出现 1 条相关内容，归入「票房与档期」方向；关联词包括：票房预售和主创路演成关注点、新片定档暑期档、暑期档、票房、预售、定档。",
+          "samples": [
+            {
+              "title": "新片定档暑期档，票房预售和主创路演成关注点",
+              "platform": "微博",
+              "sourceName": "微博 · 示例",
+              "channel": "示例",
+              "url": "#",
+              "rank": 1,
+              "isFallback": true
+            }
+          ],
+          "rank": 1
+        },
+        {
+          "title": "热播剧大结局口碑分化",
+          "family": "热播剧与大结局",
+          "score": 83,
+          "heatLevel": "高",
+          "itemCount": 1,
+          "sourceCount": 1,
+          "platforms": [
+            {
+              "name": "豆瓣",
+              "count": 1
+            }
+          ],
+          "relatedWords": [
+            "演员演技和烂尾争议登上讨论榜",
+            "热播剧大结局口碑分化",
+            "大结局",
+            "口碑",
+            "热播",
+            "烂尾",
+            "演员",
+            "争议"
+          ],
+          "reason": "豆瓣等来源出现 1 条相关内容，归入「热播剧与大结局」方向；关联词包括：演员演技和烂尾争议登上讨论榜、热播剧大结局口碑分化、大结局、口碑、热播、烂尾。",
+          "samples": [
+            {
+              "title": "热播剧大结局口碑分化，演员演技和烂尾争议登上讨论榜",
+              "platform": "豆瓣",
+              "sourceName": "豆瓣 · 示例",
+              "channel": "示例",
+              "url": "#",
+              "rank": 2,
+              "isFallback": true
+            }
+          ],
+          "rank": 2
+        },
+        {
+          "title": "综艺竞演舞台出圈",
+          "family": "综艺节目讨论",
+          "score": 82,
+          "heatLevel": "高",
+          "itemCount": 1,
+          "sourceCount": 1,
+          "platforms": [
+            {
+              "name": "B站",
+              "count": 1
+            }
+          ],
+          "relatedWords": [
+            "歌手补位和淘汰名单引发热议",
+            "综艺竞演舞台出圈",
+            "综艺",
+            "舞台",
+            "歌手",
+            "淘汰",
+            "补位",
+            "竞演"
+          ],
+          "reason": "B站等来源出现 1 条相关内容，归入「综艺节目讨论」方向；关联词包括：歌手补位和淘汰名单引发热议、综艺竞演舞台出圈、综艺、舞台、歌手、淘汰。",
+          "samples": [
+            {
+              "title": "综艺竞演舞台出圈，歌手补位和淘汰名单引发热议",
+              "platform": "B站",
+              "sourceName": "B站 · 示例",
+              "channel": "示例",
+              "url": "#",
+              "rank": 3,
+              "isFallback": true
+            }
+          ],
+          "rank": 3
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "label": "体育",
+      "emoji": "🏀",
+      "itemCount": 3,
+      "topicCount": 3,
+      "topics": [
+        {
+          "title": "布伦森东决MVP",
+          "family": "NBA季后赛 / 总决赛",
+          "score": 83,
+          "heatLevel": "高",
+          "itemCount": 1,
+          "sourceCount": 1,
+          "platforms": [
+            {
+              "name": "微博",
+              "count": 1
+            }
+          ],
+          "relatedWords": [
+            "布伦森东决MVP相关讨论升温",
+            "尼克斯晋级总决赛",
+            "总决赛",
+            "尼克斯",
+            "布伦森",
+            "MVP",
+            "决赛",
+            "东决"
+          ],
+          "reason": "微博等来源出现 1 条相关内容，归入「NBA季后赛 / 总决赛」方向；关联词包括：布伦森东决MVP相关讨论升温、尼克斯晋级总决赛、总决赛、尼克斯、布伦森、MVP。",
+          "samples": [
+            {
+              "title": "布伦森东决MVP相关讨论升温，尼克斯晋级总决赛",
+              "platform": "微博",
+              "sourceName": "微博 · 示例",
+              "channel": "示例",
+              "url": "#",
+              "rank": 1,
+              "isFallback": true
+            }
+          ],
+          "rank": 1
+        },
+        {
+          "title": "中超争冠形势变化",
+          "family": "中超 / 国足",
+          "score": 82,
+          "heatLevel": "高",
+          "itemCount": 1,
+          "sourceCount": 1,
+          "platforms": [
+            {
+              "name": "懂球帝",
+              "count": 1
+            }
+          ],
+          "relatedWords": [
+            "申花海港国安话题热度上升",
+            "中超争冠形势变化",
+            "中超",
+            "申花",
+            "海港",
+            "国安"
+          ],
+          "reason": "懂球帝等来源出现 1 条相关内容，归入「中超 / 国足」方向；关联词包括：申花海港国安话题热度上升、中超争冠形势变化、中超、申花、海港、国安。",
+          "samples": [
+            {
+              "title": "中超争冠形势变化，申花海港国安话题热度上升",
+              "platform": "懂球帝",
+              "sourceName": "懂球帝 · 示例",
+              "channel": "示例",
+              "url": "#",
+              "rank": 3,
+              "isFallback": true
+            }
+          ],
+          "rank": 2
+        },
+        {
+          "title": "NBA东部决赛4比0横扫引发骑士休赛期讨论",
+          "family": "NBA季后赛 / 总决赛",
+          "score": 74,
+          "heatLevel": "中高",
+          "itemCount": 1,
+          "sourceCount": 1,
+          "platforms": [
+            {
+              "name": "虎扑",
+              "count": 1
+            }
+          ],
+          "relatedWords": [
+            "东部决赛",
+            "NBA",
+            "决赛",
+            "骑士",
+            "横扫"
+          ],
+          "reason": "虎扑等来源出现 1 条相关内容，归入「NBA季后赛 / 总决赛」方向；关联词包括：东部决赛、NBA、决赛、骑士、横扫。",
+          "samples": [
+            {
+              "title": "NBA东部决赛4比0横扫引发骑士休赛期讨论",
+              "platform": "虎扑",
+              "sourceName": "虎扑 · 示例",
+              "channel": "示例",
+              "url": "#",
+              "rank": 2,
+              "isFallback": true
+            }
+          ],
+          "rank": 3
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "tophub_weibo_ent",
+      "name": "微博 · 文娱榜",
+      "platform": "微博",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_weibo_hot",
+      "name": "微博 · 热搜榜",
+      "platform": "微博",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_weibo_topic",
+      "name": "微博 · 话题榜",
+      "platform": "微博",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_baidu_realtime",
+      "name": "百度 · 实时热点",
+      "platform": "百度",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_douyin_all",
+      "name": "抖音 · 总榜",
+      "platform": "抖音",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_douyin_sports",
+      "name": "抖音 · 体育榜",
+      "platform": "抖音",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_douyin_drama",
+      "name": "抖音 · 剧情榜",
+      "platform": "抖音",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_bilibili",
+      "name": "哔哩哔哩 · 全站日榜",
+      "platform": "B站",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_zhihu",
+      "name": "知乎 · 热榜",
+      "platform": "知乎",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_tieba",
+      "name": "百度贴吧 · 热议榜",
+      "platform": "百度贴吧",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_hupu_nba",
+      "name": "虎扑 · NBA论坛热帖",
+      "platform": "虎扑",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_hupu_cba",
+      "name": "虎扑 · CBA论坛热帖",
+      "platform": "虎扑",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_hupu_football",
+      "name": "虎扑 · 国际足球热帖",
+      "platform": "虎扑",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_hupu_street",
+      "name": "虎扑 · 步行街热帖",
+      "platform": "虎扑",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_dongqiudi_hot",
+      "name": "懂球帝 · 热门新闻",
+      "platform": "懂球帝",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "tophub_dongqiudi_toutiao",
+      "name": "懂球帝 · 今日头条",
+      "platform": "懂球帝",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "rsshub_weibo_hot",
+      "name": "RSSHub · 微博热搜",
+      "platform": "微博",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "rsshub_zhihu_hot",
+      "name": "RSSHub · 知乎热榜",
+      "platform": "知乎",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    },
+    {
+      "id": "rsshub_bilibili_rank",
+      "name": "RSSHub · B站排行榜",
+      "platform": "B站",
+      "ok": false,
+      "count": 0,
+      "error": "fetch failed"
+    }
+  ],
+  "rawSample": [
+    {
+      "title": "布伦森东决MVP相关讨论升温，尼克斯晋级总决赛",
+      "platform": "微博",
+      "url": "#",
+      "rank": 1
+    },
+    {
+      "title": "NBA东部决赛4比0横扫引发骑士休赛期讨论",
+      "platform": "虎扑",
+      "url": "#",
+      "rank": 2
+    },
+    {
+      "title": "中超争冠形势变化，申花海港国安话题热度上升",
+      "platform": "懂球帝",
+      "url": "#",
+      "rank": 3
+    },
+    {
+      "title": "新片定档暑期档，票房预售和主创路演成关注点",
+      "platform": "微博",
+      "url": "#",
+      "rank": 1
+    },
+    {
+      "title": "热播剧大结局口碑分化，演员演技和烂尾争议登上讨论榜",
+      "platform": "豆瓣",
+      "url": "#",
+      "rank": 2
+    },
+    {
+      "title": "综艺竞演舞台出圈，歌手补位和淘汰名单引发热议",
+      "platform": "B站",
+      "url": "#",
+      "rank": 3
+    }
+  ]
+}
