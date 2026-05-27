@@ -85,7 +85,7 @@ async function main() {
       usedFallback,
       note: usedFallback
         ? '当前运行环境没有抓到外部数据，展示内置示例。部署到 GitHub 并运行 Actions 后会自动抓取真实热榜。'
-        : '已过滤广告/API/站点模板等无效标题，仅保留影视与体育相关话题。'
+        : '已过滤广告/API/榜单入口/频道页等无效标题，仅保留具体影视与体育事件话题。'
     },
     categories,
     sources: statuses,
@@ -230,7 +230,53 @@ function isTemplateOrServiceTitle(title, settings = {}) {
   if (hard.some(term => term && lower.includes(String(term).toLowerCase()))) return true;
   if (/榜眼|垂类热榜|榜中榜|热文库|小部件|赞助商|公众号|今日简报|即时写作|让每个人都可以自信地写作|人工智能让每个人|开放平台|数据\s*API|API\s*开放|接口服务|商业合作|广告合作|免责声明|隐私政策|用户协议/i.test(t)) return true;
   if (/^(榜中榜|热文库|小部件|公众号|赞助商|更多|首页|登录|注册|下载|开发者|文档)$/i.test(t)) return true;
+  if (isBroadRankingTitle(t)) return true;
   return false;
+}
+
+// 这类标题看起来命中了“影视/体育”关键词，但本质是榜单入口、频道页、论坛入口，
+// 不是可以给运营做选题的具体话题，必须直接排除。
+function isBroadRankingTitle(title) {
+  const t = cleanupTitle(title);
+  if (!t) return true;
+  const compact = t.replace(/\s+/g, '');
+
+  // 平台名 + 榜单/频道名，例如：百度视频 · 热门电视剧榜、微博 · 电影榜、虎扑社区 · NBA论坛热帖。
+  if (/^(微博|新浪微博|百度|百度视频|百度贴吧|好看视频|虎扑|虎扑社区|B站|哔哩哔哩|bilibili|抖音|快手|知乎|豆瓣|猫眼|灯塔|懂球帝|小红书|微信|公众号)[\s·\-_:：｜|]+.*(榜|榜单|排行|排行榜|热帖|论坛热帖|空间|热门新闻|今日头条)$/i.test(t)) return true;
+
+  // 频道入口/榜单入口，没有具体人物、作品、比赛或事件。
+  if (/(热门电视剧榜|热门电影榜|热门综艺榜|今日热播榜|电影榜|电视剧榜|综艺榜|文娱榜|娱乐榜|体育榜|话题榜|热搜榜|热议榜|实时热点|排行榜|榜单|论坛热帖|社区热帖|bilibili空间|BILIBILI空间)$/i.test(t)) return true;
+  if (/^(电影|电视剧|剧集|综艺|文娱|娱乐|体育|足球|篮球|NBA|CBA|中国足球|国际足球|中超|国足)(榜|热榜|榜单|排行|排行榜|论坛热帖|热帖|社区)$/i.test(compact)) return true;
+  if (/^.*的?bilibili空间$/i.test(t)) return true;
+  if (/^(百度视频|好看视频|虎扑社区|虎扑|微博|抖音|B站|知乎|豆瓣|懂球帝)[·\s-]*(电影|电视剧|综艺|体育|足球|篮球|NBA|CBA)?.*(榜|热帖)$/i.test(t)) return true;
+
+  return false;
+}
+
+function isConcreteTopicTitle(title, category, settings = {}) {
+  const t = cleanupTitle(title);
+  if (!isUsableTitle(t, settings)) return false;
+  if (isBroadRankingTitle(t)) return false;
+
+  const compact = t.replace(/\s+/g, '');
+  const hasQuotedWork = /《[^》]{2,30}》/.test(t);
+  const hasHashtag = /#[^#\s]{2,36}#/.test(t);
+  const concreteAction = /(战胜|击败|不敌|绝杀|逆转|晋级|出局|夺冠|卫冕|淘汰|受伤|复出|退役|转会|签约|续约|交易|裁掉|官宣|定档|改档|撤档|上映|开播|收官|大结局|杀青|开机|发布|预告|路透|海报|票房|破亿|开分|入围|获奖|提名|回应|道歉|发文|声明|辟谣|争议|翻车|爆料|曝光|确认|公布|缺席|停赛|禁赛|复盘|赛后|赛前)/u.test(t);
+  const hasScoreOrGame = /\b(G[1-7]|[0-9]+[-:：比][0-9]+|[0-9]+分|[0-9]+球|[0-9]+连胜|[0-9]+连败)\b/i.test(t);
+  const hasSportsEntity = /(湖人|勇士|快船|太阳|凯尔特人|尼克斯|骑士|独行侠|森林狼|雷霆|马刺|掘金|火箭|国足|申花|海港|国安|泰山|蓉城|皇马|巴萨|曼城|曼联|利物浦|阿森纳|拜仁|巴黎|国米|米兰|尤文|郑钦文|德约|辛纳|詹姆斯|库里|杜兰特|约基奇|东契奇|亚历山大|布伦森|文班亚马|梅西|C罗|姆巴佩|哈兰德)/iu.test(t);
+  const hasFilmEntity = hasQuotedWork || /(导演|主演|主创|演员|女主|男主|角色|片方|剧方|节目组|工作室|白玉兰|金鸡|百花|奥斯卡|戛纳|春节档|暑期档|国庆档|五一档|贺岁档)/u.test(t);
+
+  // 去掉平台名和泛化词后，如果几乎没有剩余信息，就不是具体话题。
+  const residue = compact
+    .replace(/^(微博|新浪微博|百度|百度视频|百度贴吧|好看视频|虎扑|虎扑社区|B站|哔哩哔哩|bilibili|抖音|快手|知乎|豆瓣|猫眼|灯塔|懂球帝|小红书)[·:：-]?/i, '')
+    .replace(/(热门|今日|实时|最新|全站|垂类|相关|话题|热搜|热榜|榜单|排行|排行榜|热议|讨论|论坛|社区|空间|频道|入口|视频|新闻|头条|内容|来源)/g, '')
+    .replace(/(电影|电视剧|剧集|综艺|文娱|娱乐|体育|足球|篮球|NBA|CBA|中超|国足|欧冠|世界杯)/gi, '')
+    .trim();
+  if (residue.length <= 2 && !hasQuotedWork && !hasHashtag && !concreteAction) return false;
+
+  if (category?.id === 'film') return hasQuotedWork || hasHashtag || concreteAction || hasFilmEntity;
+  if (category?.id === 'sports') return hasHashtag || concreteAction || hasScoreOrGame || hasSportsEntity;
+  return hasQuotedWork || hasHashtag || concreteAction || hasScoreOrGame || hasSportsEntity || hasFilmEntity;
 }
 
 function isUsableTitle(title, settings = {}) {
@@ -242,8 +288,8 @@ function isUsableTitle(title, settings = {}) {
   if (/^[\d\s\.、#\-]+$/.test(t)) return false;
   if ((settings.hardBlockTerms || []).some(term => term && t.toLowerCase().includes(String(term).toLowerCase()))) return false;
   const genericHits = (settings.genericBlockTerms || []).filter(term => t.toLowerCase().includes(String(term).toLowerCase())).length;
-  const hasSpecificSignal = /《[^》]{2,30}》|NBA|CBA|LPL|KPL|WTT|世界杯|欧冠|中超|国足|电影|电视剧|剧集|综艺|票房|定档|上映|演员|导演|主演|总决赛|季后赛|奥运|网球|足球|篮球/i.test(t);
-  if (genericHits >= 3 && !hasSpecificSignal) return false;
+  const hasSpecificSignal = /《[^》]{2,30}》|#[^#\s]{2,36}#|战胜|击败|晋级|夺冠|淘汰|官宣|定档|上映|开播|收官|发布|预告|票房|破亿|开分|MVP|转会|受伤|退役|回应|争议|NBA|CBA|LPL|KPL|WTT|世界杯|欧冠|中超|国足|电影|电视剧|剧集|综艺|演员|导演|主演|总决赛|季后赛|奥运|网球|足球|篮球/i.test(t);
+  if (genericHits >= 2 && !hasSpecificSignal) return false;
   if (/榜眼|开放平台|数据\s*API|API\s*开放|总结全网|今日简报|赛博修行|解压神器/i.test(t)) return false;
   return true;
 }
@@ -294,7 +340,9 @@ function categoryMatch(category, item, settings) {
   // v3 修复：不能因为来源是“文娱榜/体育榜”就全量收录。
   // TopHub 页面里会混入“榜中榜、热文库、公众号、小部件、赞助商、API开放平台”等站点模板文本。
   // 因此所有候选标题都必须命中影视/体育词库，或具备片名《》这类强信号，才进入榜单。
-  const ok = hasStrongSignal && !isTemplateOrServiceTitle(text, settings);
+  const ok = hasStrongSignal
+    && !isTemplateOrServiceTitle(text, settings)
+    && isConcreteTopicTitle(item.title, category, settings);
   return { ok, isHinted, matchedTerms, matchedSeedTerms, positiveCount };
 }
 
@@ -307,7 +355,7 @@ function enrichItem(item, category, match, settings) {
     const hits = findMatchedTerms(text, seed.aliases || []);
     if (hits.length) familyScores.set(seed.label, hits.length);
   }
-  const family = [...familyScores.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || (match.isHinted ? '垂类热榜' : '自动发现');
+  const family = [...familyScores.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || '自动发现';
   const relatedTerms = unique([
     ...quoted,
     ...match.matchedTerms,
@@ -342,7 +390,7 @@ function chooseTopicTitle(title, terms, family, settings) {
   best = best.replace(/^(\d+\s*)/, '').trim();
   if (best.length > 34) best = best.slice(0, 33) + '…';
   if (best.length < 4) return '';
-  if (isTemplateOrServiceTitle(best, settings)) return '';
+  if (isTemplateOrServiceTitle(best, settings) || isBroadRankingTitle(best)) return '';
   return cleanupTitle(best);
 }
 
