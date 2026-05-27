@@ -1,0 +1,50 @@
+name: Update Topic Radar
+
+on:
+  workflow_dispatch:
+  schedule:
+    # GitHub cron 使用 UTC；这里每小时第 7 分钟运行一次，北京时间同样每小时更新。
+    - cron: '7 * * * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Update radar data
+        env:
+          # 可选：在仓库 Settings → Secrets and variables → Actions → Variables 中配置 RSSHUB_BASE
+          # 例如使用自建 RSSHub: https://your-rsshub.example.com
+          RSSHUB_BASE: ${{ vars.RSSHUB_BASE }}
+        run: node scripts/update.js
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
